@@ -1,0 +1,33 @@
+<div class="signin-content">
+  <mat-card>
+    <mat-card-content color="secundary">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div fxLayout="column wrap" fxLayoutWrap fxLayoutAlign="lefth">
+          <img class="logosize" src="../../../assets/logo.png" alt="ECOPROPIEDAD">
+          <mat-form-field class="full-width-input">
+            <input matInput type="email" formControlName="user">
+            <mat-placeholder class="placeholder">usuario</mat-placeholder>
+            <mat-icon matPrefix md-36>person</mat-icon>
+            <mat-error *ngIf="isFieldInvalid('user')">
+              ingrese el usuario
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <input matInput type="password" formControlName="password">
+            <mat-placeholder class="placeholder">Contraseña</mat-placeholder>
+            <mat-icon matPrefix md-36>https</mat-icon>
+            <mat-error *ngIf="isFieldInvalid('password')">
+              Ingrese su contraseña
+            </mat-error>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit">Login</button>
+          <br>
+          <a mat-list-item routerLink="/cambiarclave" routerLinkActive="active">
+            ¿Olvidó su contraseña?
+          </a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

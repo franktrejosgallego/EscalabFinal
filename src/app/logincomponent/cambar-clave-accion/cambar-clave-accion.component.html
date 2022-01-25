@@ -1,0 +1,38 @@
+<div class="signin-content2">
+  <mat-card>
+    <mat-card-content color="secundary">
+      <div *ngIf="!usuarioNuevo">
+        <p>Recibira un correo con un codigo para cambinar la contraseña, no cierre esta ventana hasta recibir el codigo y realizar el cambio de clave</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <img class="logosize" src="../../../assets/logo.png" alt="ICONO">
+        <mat-form-field *ngIf="!usuarioNuevo" class="full-width-input">
+          <input matInput formControlName="elcodigo">
+          <mat-placeholder class="placeholder">Codigo</mat-placeholder>
+          <mat-error *ngIf="isFieldInvalid('elcodigo')">
+            ingrese el codigo recibido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+          <input matInput type="password" formControlName="password">
+          <mat-placeholder class="placeholder">Contraseña</mat-placeholder>
+          <mat-error *ngIf="isFieldInvalid('password')">
+            Ingrese su contraseña
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+          <input matInput type="password" formControlName="password2">
+          <mat-placeholder class="placeholder">Confirmar Contraseña</mat-placeholder>
+          <mat-error *ngIf="isFieldInvalid('password2')">
+            repita la contraseña
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">Cambiar</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

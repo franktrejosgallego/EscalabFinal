@@ -1,0 +1,53 @@
+<div class="content">
+    <form class="content" [formGroup]="form" (ngSubmit)="submit()">
+
+        <div fxLayout="row wrap" fxLayoutWrap fxLayoutAlign="lefth center" fxLayoutGap="10px">
+            <mat-radio-group formControlName="opcion" aria-label="Select an option" fxLayout="row wrap"
+                fxLayoutGap="10px">
+                <mat-radio-button value="2">Todas</mat-radio-button>
+                <mat-radio-button value="1">Solo con saldo</mat-radio-button>
+            </mat-radio-group>
+
+
+            <mat-form-field style="width: 100px;">
+                <input matInput [matDatepicker]="desde" formControlName="desde" placeholder="desde">
+                <mat-datepicker-toggle matSuffix [for]="desde"></mat-datepicker-toggle>
+                <mat-datepicker #desde></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field style="width: 100px;">
+                <input matInput [matDatepicker]="hasta" formControlName="hasta" placeholder="hasta">
+                <mat-datepicker-toggle matSuffix [for]="hasta"></mat-datepicker-toggle>
+                <mat-datepicker #hasta></mat-datepicker>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit">Aceptar</button>
+        </div>
+    </form>
+    <!--pre>{{facturas | json}}</pre-->
+    <div>
+        <p-treeTable [value]="facturas">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Empresa</th>
+                    <th>Valor</th>
+                    <th>Saldo</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode">
+                    <td>
+                        <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                        {{rowData.nombre}}
+                    </td>
+                    <td>{{rowData.total | currency: 'USD':true: '1.0'}}</td>
+                    <td>{{rowData.saldo | currency: 'USD':true: '1.0'}}</td>
+                </tr>
+            </ng-template>
+        </p-treeTable>
+
+    </div>
+
+
+
+</div>

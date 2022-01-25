@@ -1,0 +1,40 @@
+<p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>
+<ng-http-loader></ng-http-loader>
+
+<div class="sd-container fontsmall">
+  <mat-toolbar *ngIf="isLoggedIn$ | async" color="primary" class="sd-toolbar">
+    <div style="width:100%" fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="colorw" fxLayout="row wrap" fxLayoutWrap fxLayoutAlign="lefth" fxLayoutGap="10px">
+        <mat-icon md-24>account_circle</mat-icon>
+        <div class="fontsmall">{{authService.usuario.nombre}}
+        </div>
+      </div>
+
+      <a  *ngIf="authService.usuario.vendedor" routerLink="/pedido" routerLinkActive="active" role="button">
+        <div class="colorw" fxLayout="row wrap" fxLayoutWrap fxLayoutAlign="lefth" fxLayoutGap="10px">
+          <mat-icon md-24>playlist_add</mat-icon>
+        </div>
+      </a>
+
+      <a  *ngIf="authService.usuario.vendedor" routerLink="/facturas" routerLinkActive="active" role="button">
+        <div class="colorw" fxLayout="row wrap" fxLayoutWrap fxLayoutAlign="lefth" fxLayoutGap="10px">
+          <mat-icon md-24>list</mat-icon>
+        </div>
+      </a>
+      
+      <button mat-icon-button (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+  <!--[style.marginTop.px]="mobileQuery.matches ? 56 : 0"-->
+  <mat-sidenav-container class="sd-sidenav-container">
+    <mat-sidenav-content>
+      <main [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''">
+        <router-outlet #o="outlet"></router-outlet>
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

@@ -1,0 +1,190 @@
+<div>
+  <form *ngIf="authService.usuario.vendedor === true" class="content" [formGroup]="form" (ngSubmit)="onSubmitCli()">
+    <div class="content">
+      <div fxLayout="row wrap" fxLayoutWrap fxLayoutGap="10px" fxLayoutAlign="center">
+        <h4>SELECCION DEL CLIENTE</h4>
+      </div>
+      <div>
+        <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="10px"
+          fxLayoutAlign="space-between center">
+          <mat-form-field fxFlex [class.wdt100]="mobileMode">
+            <input id='nit' matInput type="text" formControlName="nit" aria-label="Number"
+              ng-disabled="terceroActivo" [matAutocomplete]="nitAutocomplete">
+            <mat-autocomplete (optionSelected)="selectClient($event)" autoActiveFirstOption
+              #nitAutocomplete="matAutocomplete">
+              <mat-option *ngFor="let user of (filteredUsers | async)?.data" [value]="user.nit">
+                <small>{{ user.nit }}</small>
+                <small> | {{user.empresa}}</small>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-placeholder class="placeholder">Nit</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid('nit')">
+              ingrese el nit
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex [class.wdt100]="mobileMode" [class.rs]="!mobileMode">
+            <input matInput type="text" formControlName="rs" aria-label="Number" [matAutocomplete]="resAutocomplete">
+            <mat-autocomplete (optionSelected)="selectClient($event)" autoActiveFirstOption
+              #resAutocomplete="matAutocomplete">
+              <mat-option *ngFor="let user of (filterednames | async)?.data" [value]="user.empresa">
+                <small>{{ user.nit }}</small>
+                <small> | {{user.empresa}}</small>
+              </mat-option>
+            </mat-autocomplete>
+
+            <mat-placeholder class="placeholder">Razon Social</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid('rs')">
+              ingrese la razon social
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field [class.wdt100]="mobileMode" [class.dias]="!mobileMode">
+            <input id="dias" matInput type="number" formControlName="dias" (keydown.enter)="focusDias()">
+            <mat-placeholder class="placeholder">Dias</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid('dias')">
+              dias para el pedido
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <form class="content" [formGroup]="formProducto" (ngSubmit)="submitPRoduct()">
+    <div class="content">
+      <div fxLayout="row wrap" fxLayoutWrap fxLayoutGap="10px" fxLayoutAlign="center">
+        <h4>SELECCION DE PRODUCTOS</h4>
+      </div>
+      <div>
+        <div *ngIf="image && image !== ''">
+          <img src="{{image}}">
+        </div>
+        <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="10px"
+          fxLayoutAlign="space-between center">
+          <mat-form-field fxFlex [class.wdt100]="mobileMode">
+            <input id="codigo" matInput type="text" formControlName="codigo" (keyup)="searchProductByCod($event)"
+              autocomplete="off" aria-label="Number" (keydown.enter)="seleccionFirstEnt($event)"
+              >
+            <mat-placeholder class="placeholder">Codigo</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid2('codigo')">
+              ingrese el codigo del producto
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex [class.wdt100]="mobileMode">
+            <input matInput type="text" formControlName="nombre" aria-label="Number" autocomplete="off"
+              (keyup)="searchProductByNom($event)" (keydown.enter)="seleccionFirstEnt($event)"
+              >
+            <mat-placeholder class="placeholder">Nombre producto</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid2('nombre')">
+              ingrese el nombre
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field [class.wdt100]="mobileMode" [class.dias]="!mobileMode">
+            <input id="cantidad" matInput type="number" formControlName="cantidad">
+            <mat-placeholder class="placeholder">Cantidad</mat-placeholder>
+            <mat-error *ngIf="isFieldInvalid2('cantidad')">
+              ingrese la cantidad
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" style="margin:5px" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+          <div *ngIf="formProducto.value.valor_unitario">
+            <small><strong>Precio:</strong> {{formProducto.value.valor_unitario}}</small>
+          </div>
+          <div *ngIf="inventario !== undefined">
+            <small><strong>Inventario:</strong> {{inventario}}</small>
+          </div>
+          <div *ngIf="separado  !== undefined">
+            <small><strong>Separado:</strong> {{separado}}</small>
+          </div>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit">AGREGAR</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="content" *ngIf="productos && productos.length > 0">
+    <div fxLayout="row wrap" fxLayoutWrap fxLayoutGap="10px" fxLayoutAlign="center">
+      <h4>PRODUCTOS ENCONTRADOS</h4>
+    </div>
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="20px" fxLayoutAlign="center">
+      <div *ngFor="let producto of productos; let i = index">
+        <div [class.lineares]="i > 0" [class.linearesf]="i == 0" (click)="seleccionBusqueda(producto)" fxLayout="row"
+          fxLayoutAlign="start stretch">
+          <div *ngIf="producto.image">
+            <img class="wdtimgcrd" src="{{RUTAIMAGENES + producto.codigo + '/' + producto.image[imageindex]}}">
+          </div>
+          <div fxLayout="column" style="margin:5px" fxLayoutAlign="start stretch">
+            <div>
+              <small><strong>{{producto.nombre}}</strong></small>
+            </div>
+            <div>
+              <strong>SKU:</strong> {{producto.codigo}}
+            </div>
+            <div>
+              <strong>$:</strong> {{producto.preciocredito}}
+            </div>
+            <div>
+              <strong>INV:</strong> {{producto.inventario}} <strong>SEP:</strong> {{producto.cantidad_separada}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" *ngIf="productosPedido !== undefined && productosPedido.length > 0">
+    <div fxLayout="row wrap" fxLayoutWrap fxLayoutGap="10px" fxLayoutAlign="center">
+      <h4>DATOS DEL PEDIDO</h4>
+    </div>
+    <div fxLayout="row wrap" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="20px" fxLayoutAlign="center">
+      <div *ngFor="let producto of productosPedido; let i = index">
+        <div class="linearesnc" fxLayout="row" fxLayoutAlign="start stretch">
+          <div *ngIf="producto.image">
+            <img class="wdtimgcrd" src="{{RUTAIMAGENES + producto.codigo + '/' + producto.image[imageindex]}}">
+          </div>
+          <div fxFlex fxLayout="column" style="margin:5px" fxLayoutAlign="start stretch">
+            <div fxLayout="row" fxLayoutAlign="end end">
+              <mat-icon md-24 color="primary" class="pointer" (click)="eliminarProducto(producto)">delete</mat-icon>
+            </div>
+            <div>
+              <strong>{{producto.nombre}}</strong>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+              <div>
+                <strong>SKU:</strong> {{producto.codigo}}
+              </div>
+              <div>
+                <strong>INV:</strong> {{producto.inventario}}
+              </div>
+              <div>
+                <strong>SEP:</strong> {{producto.cantidad_separada}}
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+              <div>
+                <strong>$:</strong> {{producto.valor_unitario}}
+              </div>
+              <div>
+                <strong>CANTIDAD:</strong> {{producto.cantidad}}
+              </div>
+              <div>
+                <strong>$ TOTAL:</strong> {{producto.valor_unitario * producto.cantidad }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div fxFlex fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" style="margin: 20px">
+        <button *ngIf="authService.usuario.vendedor === true" mat-raised-button color="primary" (click)="Finalizar()"
+          type="button">FINALIZAR</button>
+        <button mat-raised-button color="primary" (click)="Cancelar()" type="button">CANCELAR PEDIDO</button>
+      </div>
+    </div>
+  </div>

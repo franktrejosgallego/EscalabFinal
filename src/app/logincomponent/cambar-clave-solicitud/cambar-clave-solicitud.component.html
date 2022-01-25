@@ -1,0 +1,27 @@
+<div class="signin-content">
+  <mat-card>
+    <mat-card-content color=" secundary">
+      <img class="logosize" src="../../../assets/logo.png" alt="logo">
+      <form [formGroup]="ccform" (ngSubmit)="onSubmit()">
+        <div fxLayout="column wrap" fxLayoutWrap fxLayoutAlign="lefth">
+          <p>Ingrese su usuario</p>
+          <mat-form-field class="full-width-input">
+            <input matInput type="text" formControlName="user" required>
+            <mat-placeholder class="placeholder">usuario</mat-placeholder>
+            <mat-icon matPrefix md-36>account_circle</mat-icon>
+            <mat-error *ngIf="isFieldInvalid('user')">
+              ingrese el usuario
+            </mat-error>
+          </mat-form-field>
+          <mat-checkbox formControlName="vendedor">Soy vendedor</mat-checkbox>
+          <button mat-raised-button color="primary" type="submit">{{strboton}}</button>
+        </div>
+      </form>
+      <div *ngIf="primerIntento">
+        <p class="colorred">Lo sentimos el usuario no se está registrado en el sistema, intente de nuevo o comuniquese
+          con la linea de atencion al cliente
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
